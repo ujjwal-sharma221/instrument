@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "inngest:dev": "inngest-cli dev",
+    "dev:all": "mprocs"
   },
   "dependencies": {
     "@prisma/client": "^6.17.1",
@@ -23,6 +25,7 @@
     "class-variance-authority": "^0.7.1",
     "client-only": "^0.0.1",
     "clsx": "^2.1.1",
+    "inngest": "^3.44.3",
     "install": "^0.13.0",
     "lucide-react": "^0.545.0",
     "next": "15.5.5",
@@ -41,6 +44,8 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.5.5",
+    "inngest-cli": "^1.12.1",
+    "mprocs": "^0.7.3",
     "prisma": "^6.17.1",
     "tailwindcss": "^4",
     "tsx": "^4.20.6",
