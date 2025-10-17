@@ -21,10 +21,14 @@ export default function Home() {
     }),
   );
 
+  const testAi = useMutation(trpc.testAi.mutationOptions());
+
   return (
     <div className="h-screen flex items-center justify-center flex-col">
       home
-      <Button onClick={() => create.mutate()}>Create workflow</Button>
+      <Button onClick={() => testAi.mutate()} disabled={testAi.isPending}>
+        Create workflow
+      </Button>
       {JSON.stringify(data, null, 2)}
     </div>
   );
