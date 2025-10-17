@@ -15,12 +15,13 @@ import {
   SidebarMenuButton,
 } from "./ui/sidebar";
 import { KeyIcon } from "./icons/key";
+import { LogoutIcon } from "./ui/logout";
 import { TimerIcon } from "./icons/timer";
 import { FoldersIcon } from "./icons/folders";
+import { authClient } from "@/lib/auth/auth-client";
 import { ChartScatterIcon } from "./icons/chart-scatter";
 import { PoundSterlingIcon } from "./icons/pound-sterling";
-import { LogoutIcon } from "./ui/logout";
-import { authClient } from "@/lib/auth/auth-client";
+import { useHasActiveSubscription } from "@/features/payments/hooks/use-payments";
 
 const menuItems = [
   {
@@ -47,6 +48,7 @@ const menuItems = [
 
 export function AppSidebar() {
   const pathname = usePathname();
+  const { hasActiveSubscription, isLoading } = useHasActiveSubscription();
 
   return (
     <Sidebar collapsible="icon">
@@ -90,21 +92,23 @@ export function AppSidebar() {
 
       <SidebarFooter>
         <SidebarMenuItem>
-          <SidebarMenuButton
-            tooltip="upgrade to pro"
-            className="gap-x-4 h-10 px-4"
-            onClick={() => {}}
-          >
-            <PoundSterlingIcon size={16} />
-            <span>Upgrade to Pro</span>
-          </SidebarMenuButton>
+          {!hasActiveSubscription && !isLoading && (
+            <SidebarMenuButton
+              tooltip="upgrade to pro"
+              className="gap-x-4 h-10 px-4"
+              onClick={() => authClient.checkout({ slug: "Instrument-Pro" })}
+            >
+              <PoundSterlingIcon size={16} />
+              <span>Upgrade to Pro</span>
+            </SidebarMenuButton>
+          )}
         </SidebarMenuItem>
 
         <SidebarMenuItem>
           <SidebarMenuButton
             tooltip="billing portal"
             className="gap-x-4 h-10 px-4"
-            onClick={() => {}}
+            onClick={() => authClient.customer.portal()}
           >
             <ChartScatterIcon size={16} />
             <span>Billing Portal</span>
