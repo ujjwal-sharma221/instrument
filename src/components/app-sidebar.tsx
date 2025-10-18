@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 
 import {
   Sidebar,
@@ -48,6 +49,7 @@ const menuItems = [
 
 export function AppSidebar() {
   const pathname = usePathname();
+  const queryClient = useQueryClient();
   const { hasActiveSubscription, isLoading } = useHasActiveSubscription();
 
   return (
@@ -123,6 +125,9 @@ export function AppSidebar() {
               authClient.signOut({
                 fetchOptions: {
                   onSuccess: () => {
+                    queryClient.invalidateQueries({
+                      queryKey: ["payment"],
+                    });
                     window.location.href = "/login";
                   },
                 },
