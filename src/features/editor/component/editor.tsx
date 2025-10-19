@@ -13,6 +13,7 @@ import {
   Background,
   Controls,
   MiniMap,
+  Panel,
 } from "@xyflow/react";
 import { useState, useCallback } from "react";
 
@@ -23,6 +24,7 @@ import {
 import { useSuspsenseWorkflow } from "@/features/workflows/hooks/use-workflows";
 
 import "@xyflow/react/dist/style.css";
+import { AddNodeButton } from "./add-node-button";
 import { nodeComponents } from "@/config/node-components";
 
 export function Editor({ workflowId }: { workflowId: string }) {
@@ -63,6 +65,9 @@ export function Editor({ workflowId }: { workflowId: string }) {
         <Controls />
         <MiniMap />
         <Background />
+        <Panel position="top-right">
+          <AddNodeButton />
+        </Panel>
       </ReactFlow>
     </div>
   );
