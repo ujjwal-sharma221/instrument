@@ -12,8 +12,8 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
   useSuspsenseWorkflow,
   useUpdateWorkflowName,
@@ -36,7 +36,7 @@ export function EditorHeader({ workflowId }: EditorHeaderProps) {
   );
 }
 
-export const EditorSaveButton = ({ wokflowId }: { workflowId: string }) => {
+export const EditorSaveButton = ({ workflowId }: { workflowId: string }) => {
   return (
     <div className="ml-auto">
       <Button variant="secondary" onClick={() => {}} size="sm">
