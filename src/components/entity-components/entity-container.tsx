@@ -18,8 +18,8 @@ export function EntityContainer({
         <div className="flex flex-col gap-y-4 h-full">
           {search}
           {children}
+          {pagination}
         </div>
-        {pagination}
       </div>
     </div>
   );

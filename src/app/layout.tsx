@@ -1,6 +1,7 @@
+import { Toaster } from "sonner";
 import type { Metadata } from "next";
 import { Noto_Sans } from "next/font/google";
-import { Toaster } from "sonner";
+import { NuqsAdapter } from "nuqs/adapters/next";
 
 import "./globals.css";
 import { TRPCReactProvider } from "@/trpc/client";
@@ -28,7 +29,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${notoSans.variable}  antialiased`}>
-        <TRPCReactProvider>{children}</TRPCReactProvider>
+        <TRPCReactProvider>
+          <NuqsAdapter>{children}</NuqsAdapter>
+        </TRPCReactProvider>
         <Toaster closeButton />
       </body>
     </html>
