@@ -5,7 +5,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <SidebarProvider>
       <AppSidebar />
-      <SidebarInset className="bg-accent/20">{children}</SidebarInset>
+      <SidebarInset className="bg-accent/10">{children}</SidebarInset>
     </SidebarProvider>
   );
 };

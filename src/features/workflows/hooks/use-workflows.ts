@@ -50,3 +50,28 @@ export const useRemoveWorkflow = () => {
     }),
   );
 };
+
+export const useSuspsenseWorkflow = (id: string) => {
+  const trpc = useTRPC();
+  return useSuspenseQuery(trpc.workflows.getOne.queryOptions({ id }));
+};
+
+export const useUpdateWorkflowName = () => {
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
+
+  return useMutation(
+    trpc.workflows.updateName.mutationOptions({
+      onSuccess: (data) => {
+        toast.success(`Workflow renamed to ${data.name} successfully`);
+        queryClient.invalidateQueries(trpc.workflows.getMany.queryOptions({}));
+        queryClient.invalidateQueries(
+          trpc.workflows.getOne.queryOptions({ id: data.id }),
+        );
+      },
+      onError: (error) => {
+        toast.error(error.message);
+      },
+    }),
+  );
+};
