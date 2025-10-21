@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { toast } from "sonner";
+import { useAtomValue } from "jotai";
 import { SaveIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
@@ -12,9 +13,11 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { editorAtom } from "../store/atoms";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
+  useUpdateWorkflow,
   useSuspsenseWorkflow,
   useUpdateWorkflowName,
 } from "@/features/workflows/hooks/use-workflows";
@@ -37,9 +40,30 @@ export function EditorHeader({ workflowId }: EditorHeaderProps) {
 }
 
 export const EditorSaveButton = ({ workflowId }: { workflowId: string }) => {
+  const editor = useAtomValue(editorAtom);
+  const saveWorkflow = useUpdateWorkflow();
+
+  const handleSave = () => {
+    if (!editor) return;
+
+    const nodes = editor.getNodes();
+    const edges = editor.getEdges();
+
+    saveWorkflow.mutate({
+      id: workflowId,
+      nodes,
+      edges,
+    });
+  };
+
   return (
     <div className="ml-auto">
-      <Button variant="secondary" onClick={() => {}} size="sm">
+      <Button
+        variant="secondary"
+        disabled={saveWorkflow.isPending}
+        onClick={handleSave}
+        size="sm"
+      >
         <SaveIcon className="size-4" />
         Save
       </Button>

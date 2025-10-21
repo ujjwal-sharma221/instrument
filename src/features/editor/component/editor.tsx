@@ -15,22 +15,39 @@ import {
   MiniMap,
   Panel,
 } from "@xyflow/react";
+import { useSetAtom } from "jotai";
 import { useState, useCallback } from "react";
 
+import { editorAtom } from "../store/atoms";
+import { AddNodeButton } from "./add-node-button";
 import {
   ErrorView,
   LoadingView,
 } from "@/components/entity-components/entity-state";
+import { nodeComponents } from "@/config/node-components";
 import { useSuspsenseWorkflow } from "@/features/workflows/hooks/use-workflows";
+import { NodeType } from "@/generated/prisma";
 
 import "@xyflow/react/dist/style.css";
-import { AddNodeButton } from "./add-node-button";
-import { nodeComponents } from "@/config/node-components";
 
 export function Editor({ workflowId }: { workflowId: string }) {
   const { data: workflow } = useSuspsenseWorkflow(workflowId);
 
-  const [nodes, setNodes] = useState<Node[]>(workflow.nodes);
+  const setEditor = useSetAtom(editorAtom);
+
+  const initialNodes =
+    workflow.nodes.length > 0
+      ? workflow.nodes
+      : [
+          {
+            id: "initial",
+            type: NodeType.INITIAL,
+            position: { x: 250, y: 250 },
+            data: {},
+          },
+        ];
+
+  const [nodes, setNodes] = useState<Node[]>(initialNodes);
   const [edges, setEdges] = useState<Edge[]>(workflow.edges);
 
   const onNodesChange = useCallback(
@@ -59,8 +76,14 @@ export function Editor({ workflowId }: { workflowId: string }) {
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
+        onInit={setEditor}
         nodeTypes={nodeComponents}
         fitView
+        snapToGrid
+        snapGrid={[10, 10]}
+        panOnScroll
+        panOnDrag={false}
+        selectionOnDrag
       >
         <Controls />
         <MiniMap />

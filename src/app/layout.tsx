@@ -1,4 +1,5 @@
 import { Toaster } from "sonner";
+import { Provider } from "jotai";
 import type { Metadata } from "next";
 import { Noto_Sans } from "next/font/google";
 import { NuqsAdapter } from "nuqs/adapters/next";
@@ -10,11 +11,6 @@ const notoSans = Noto_Sans({
   variable: "--font-geist-sans",
   subsets: ["latin"],
 });
-
-// const geistMono = Geist_Mono({
-//   variable: "--font-geist-mono",
-//   subsets: ["latin"],
-// });
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -30,7 +26,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${notoSans.variable}  antialiased`}>
         <TRPCReactProvider>
-          <NuqsAdapter>{children}</NuqsAdapter>
+          <NuqsAdapter>
+            <Provider>{children}</Provider>
+          </NuqsAdapter>
         </TRPCReactProvider>
         <Toaster closeButton />
       </body>
