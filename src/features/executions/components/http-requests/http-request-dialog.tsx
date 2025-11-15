@@ -2,7 +2,7 @@
 
 import z from "zod/v4";
 import { useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import {
@@ -12,6 +12,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
 import {
   Dialog,
@@ -33,37 +34,31 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 
 const FormSchema = z.object({
-  endpoint: z.url({ message: "Please enter a valid url" }),
+  endpoint: z.string().min(1, { message: "Please enter a valid url" }),
   method: z.enum(["GET", "PATCH", "PUT", "POST", "DELETE"]),
   body: z.string(),
 });
+
+export type HTTPNodeFormValues = z.infer<typeof FormSchema>;
 
 interface ManualTriggerDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSubmit: (values: z.infer<typeof FormSchema>) => void;
-  defaultEndpoint?: string;
-  defaultMethod?: "GET" | "PATCH" | "PUT" | "POST" | "DELETE";
-  defaultBody?: string;
+  defaultValues?: Partial<HTTPNodeFormValues>;
 }
-
-export type HTTPNodeFormValues = z.infer<typeof FormSchema>;
 
 export function HTTPRequestDialog({
   onOpenChange,
   open,
   onSubmit,
-  defaultBody = "",
-  defaultEndpoint = "",
-  defaultMethod = "GET",
+  defaultValues = {},
 }: ManualTriggerDialogProps) {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
   const form = useForm<z.infer<typeof FormSchema>>({
     defaultValues: {
-      endpoint: defaultEndpoint,
-      method: defaultMethod,
-      body: defaultBody,
+      endpoint: defaultValues.endpoint || "",
+      method: defaultValues.method || "GET",
+      body: defaultValues.body || "",
     },
     resolver: zodResolver(FormSchema),
   });
@@ -79,12 +74,12 @@ export function HTTPRequestDialog({
   useEffect(() => {
     if (open) {
       form.reset({
-        endpoint: defaultEndpoint,
-        method: defaultMethod,
-        body: defaultBody,
+        endpoint: defaultValues.endpoint || "",
+        method: defaultValues.method || "GET",
+        body: defaultValues.body || "",
       });
     }
-  }, [open, defaultBody, defaultEndpoint, defaultEndpoint, form]);
+  }, [open, defaultValues, form]);
 
   return (
     <Dialog onOpenChange={onOpenChange} open={open}>
@@ -127,6 +122,7 @@ export function HTTPRequestDialog({
                   <FormDescription className="text-xs">
                     The HTTP method that will be used for making a request
                   </FormDescription>
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -147,6 +143,7 @@ export function HTTPRequestDialog({
                     Static URL or use {"{{variables}}"} for simple use values or{" "}
                     {"{{json variables}}"} to stringify objects
                   </FormDescription>
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -175,6 +172,7 @@ export function HTTPRequestDialog({
                       or
                       {`{{json variable}}`} to stringify JSON.
                     </FormDescription>
+                    <FormMessage />
                   </FormItem>
                 )}
               />

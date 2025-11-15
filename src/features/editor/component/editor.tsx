@@ -16,9 +16,10 @@ import {
   Panel,
 } from "@xyflow/react";
 import { useSetAtom } from "jotai";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 
 import { editorAtom } from "../store/atoms";
+import { NodeType } from "@/generated/prisma";
 import { AddNodeButton } from "./add-node-button";
 import {
   ErrorView,
@@ -26,9 +27,9 @@ import {
 } from "@/components/entity-components/entity-state";
 import { nodeComponents } from "@/config/node-components";
 import { useSuspsenseWorkflow } from "@/features/workflows/hooks/use-workflows";
-import { NodeType } from "@/generated/prisma";
 
 import "@xyflow/react/dist/style.css";
+import { ExecuteWorkflowButton } from "./execute-workflow-button";
 
 export function Editor({ workflowId }: { workflowId: string }) {
   const { data: workflow } = useSuspsenseWorkflow(workflowId);
@@ -68,6 +69,10 @@ export function Editor({ workflowId }: { workflowId: string }) {
     [],
   );
 
+  const hasManualTrigger = useMemo(() => {
+    return nodes.some((node) => node.type === NodeType.MANUAL_TRIGGER);
+  }, [nodes]);
+
   return (
     <div className="size-full">
       <ReactFlow
@@ -91,6 +96,12 @@ export function Editor({ workflowId }: { workflowId: string }) {
         <Panel position="top-right">
           <AddNodeButton />
         </Panel>
+
+        {!!hasManualTrigger && (
+          <Panel position="bottom-center">
+            <ExecuteWorkflowButton workflowId={workflowId} />
+          </Panel>
+        )}
       </ReactFlow>
     </div>
   );

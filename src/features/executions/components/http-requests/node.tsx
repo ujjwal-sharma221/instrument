@@ -8,18 +8,17 @@ import { BaseExecutionNode } from "../base-execution-node";
 import { HTTPNodeFormValues, HTTPRequestDialog } from "./http-request-dialog";
 
 type HTTPRequestNodeData = {
-  endPoint?: string;
+  endpoint?: string;
   method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
   body?: string;
-  [key: string]: unknown;
 };
 
 type HTTPRequestNodeType = Node<HTTPRequestNodeData>;
 
 export const HTTPRequestNode = memo((props: NodeProps<HTTPRequestNodeType>) => {
   const nodeData = props.data;
-  const description = nodeData?.endPoint
-    ? `${nodeData.method || "GET"}: ${nodeData.endPoint}`
+  const description = nodeData?.endpoint
+    ? `${nodeData.method || "GET"}: ${nodeData.endpoint}`
     : `Not Configured`;
 
   const nodeStatus = "loading";
@@ -35,9 +34,7 @@ export const HTTPRequestNode = memo((props: NodeProps<HTTPRequestNodeType>) => {
             ...node,
             data: {
               ...node.data,
-              endPoint: values.endpoint,
-              method: values.method,
-              body: values.body,
+              ...values,
             },
           };
         }
@@ -53,10 +50,9 @@ export const HTTPRequestNode = memo((props: NodeProps<HTTPRequestNodeType>) => {
         open={isDialogOpen}
         onOpenChange={setIsDialogOpen}
         onSubmit={handleSubmit}
-        defaultEndpoint={nodeData.endPoint}
-        defaultMethod={nodeData.method}
-        defaultBody={nodeData.body}
+        defaultValues={nodeData}
       />
+
       <BaseExecutionNode
         {...props}
         id={props.id}
